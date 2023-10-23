@@ -6,9 +6,9 @@ import StoreContext from '../../../store/Store/StoreContext';
 import { fetchBountiesWithServiceArg, formatCurrency } from '../../../services/utils/lib';
 import LoadingIcon from '../../Loading/ButtonLoadingIcon';
 import ClaimsPerBounty from './ClaimsPerBounty';
-import useWeb3 from '../../../hooks/useWeb3';
 import useGetTokenValues from '../../../hooks/useGetTokenValues';
 import useIsOnCorrectNetwork from '../../../hooks/useIsOnCorrectNetwork';
+import useWeb3 from '../hooks/useWeb3';
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
@@ -278,12 +278,12 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
                 </select>
               </div>
             </div>
-            {!loadingBounties && tierAmount == 0 && (
+            {!loadingBounties && tierAmount === 0 && (
               <div className='bg-info border-info-strong border-2 p-3 rounded-sm mb-4 text-center'>
                 No Bounties Found
               </div>
             )}
-            {loadingBounties && tierAmount == 0 && (
+            {loadingBounties && tierAmount === 0 && (
               <div className='flex justify-center items-center bg-info border-info-strong border-2 p-3 rounded-sm mb-4'>
                 Loading... <LoadingIcon />
               </div>
