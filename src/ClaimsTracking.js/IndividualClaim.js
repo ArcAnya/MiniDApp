@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import StoreContext from '../../../../../store/Store/StoreContext';
-import Link from 'next/link';
 import { ethers } from 'ethers';
 import useWeb3 from '../../../../../hooks/useWeb3';
 import useIsOnCorrectNetwork from '../../../../../hooks/useIsOnCorrectNetwork';
@@ -51,10 +50,10 @@ const IndividualClaim = ({
   const [walletCondition, setWalletCondition] = useState(true);
   const githubCondition =
     githubFilter && !githubUserId?.includes(githubFilter) && !githubUser?.login.includes(githubFilter);
-  const [claimed, setClaimed] = useState(bounty?.claims?.some((claim) => claim.tier == index));
+  const [claimed, setClaimed] = useState(bounty?.claims?.some((claim) => claim.tier === index));
   const [claimCondition, setClaimCondition] = useState(true);
   const w8Condition = w8Filter !== 'all' && w8Filter !== w8Status.toLowerCase();
-  const kycCondition = (kycFilter == 'true' && !KYC) || (kycFilter == 'false' && KYC);
+  const kycCondition = (kycFilter === 'true' && !KYC) || (kycFilter === 'false' && KYC);
   const [hide, setHide] = useState('');
 
   useEffect(() => {
@@ -70,7 +69,7 @@ const IndividualClaim = ({
     };
   });
   useEffect(() => {
-    const claimCondition = (claimFilter == 'true' && !claimed) || (claimFilter == 'false' && claimed);
+    const claimCondition = (claimFilter === 'true' && !claimed) || (claimFilter === 'false' && claimed);
     setClaimCondition(claimCondition);
   }, [claimFilter, claimed]);
   useEffect(() => {
@@ -108,7 +107,7 @@ const IndividualClaim = ({
     checkAssociatedAddress();
   }, [githubUserId]);
   useEffect(() => {
-    setClaimed(bounty?.claims?.some((claim) => claim.tier == index));
+    setClaimed(bounty?.claims?.some((claim) => claim.tier === index));
     const currentW8Status = bounty.supportingDocumentsCompleted?.[index]
       ? 'APPROVED'
       : requested
@@ -125,11 +124,11 @@ const IndividualClaim = ({
     let newFilteredInfo = filteredInfo;
     if (githubCondition || claimCondition || w8Condition || kycCondition || !walletCondition) {
       newFilteredTiers[index] = false;
-      newCount = newFilteredTiers?.filter((value) => value == true)?.length || 0;
+      newCount = newFilteredTiers?.filter((value) => value === true)?.length || 0;
       setHide('hidden');
     } else {
       newFilteredTiers[index] = true;
-      newCount = newFilteredTiers?.filter((value) => value == true)?.length || 0;
+      newCount = newFilteredTiers?.filter((value) => value === true)?.length || 0;
       setHide('');
     }
     setFilteredTiers(newFilteredTiers);
@@ -137,7 +136,7 @@ const IndividualClaim = ({
     setFilteredInfo({ ...filteredInfo, ...newFilteredInfo });
   }, [filters, githubCondition, claimCondition, w8Condition, kycCondition, walletCondition]);
   useEffect(() => {
-    if (associatedAddress && chainId == 137) hasKYC();
+    if (associatedAddress && chainId === 137) hasKYC();
   }, [chainId, associatedAddress]);
   const checkWallet = () => {
     if (walletFilter?.length > 0) {
@@ -161,9 +160,9 @@ const IndividualClaim = ({
       {githubUserId ? (
         <div className='flex gap-2 '>
           {githubUser?.url ? (
-            <Link href={githubUser?.url} target='_blank' className=' text-link-colour hover:underline '>
+            <a href={githubUser?.url} target='_blank' rel='noreferrer' className=' text-link-colour hover:underline '>
               {githubUser.login}
-            </Link>
+            </a>
           ) : (
             'Loading...'
           )}{' '}
@@ -222,14 +221,9 @@ const IndividualClaim = ({
         {associatedAddress ? (
           <div className='flex items-center gap-1'>
             <CopyAddressToClipboard clipping={[3, 39]} data={associatedAddress} styles={''} />
-            <Link
-              href={`https://polygonscan.com/address/${associatedAddress}`}
-              rel='noopener norefferer'
-              target='_blank'
-              className='text-link-colour hover:underline'
-            >
+            <a href={`https://polygonscan.com/address/${associatedAddress}`} target='_blank' rel='noreferrer'  className='text-link-colour hover:underline'>
               <LinkIcon />
-            </Link>
+            </a>
           </div>
         ) : (
           <span className='text-gray-500'>---</span>
