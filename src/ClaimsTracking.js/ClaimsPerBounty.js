@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Github from '../../../svg/github';
 import IndividualClaim from './IndividualClaim';
+import Github from '../github';
 
 const ClaimsPerBounty = ({ item, filters, setFilteredInfo, filteredInfo, winnersInfo }) => {
   const gridFormat = 'grid grid-cols-[2fr_1fr_0.75fr_0.5fr_0.75fr_0.5fr]';

@@ -3,12 +3,12 @@ import React, { useState, useContext, useEffect, useMemo } from 'react';
 
 //Custom
 import StoreContext from '../../../store/Store/StoreContext';
-import { fetchBountiesWithServiceArg, formatCurrency } from '../../../services/utils/lib';
-import LoadingIcon from '../../Loading/ButtonLoadingIcon';
 import ClaimsPerBounty from './ClaimsPerBounty';
 import useGetTokenValues from '../../../hooks/useGetTokenValues';
 import useIsOnCorrectNetwork from '../../../hooks/useIsOnCorrectNetwork';
 import useWeb3 from '../hooks/useWeb3';
+import LoadingIcon from '../loadingIcon';
+import { fetchBountiesWithServiceArg, formatCurrency } from '../utils/lib';
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
