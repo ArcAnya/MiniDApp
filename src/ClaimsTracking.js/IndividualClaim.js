@@ -5,6 +5,7 @@ import useWeb3 from '../hooks/useWeb3';
 import CopyAddressToClipboard from '../copyAddressToClipboard';
 import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import { ethers } from 'ethers';
+import OpenQSubgraphClient from '../utils/OpenQSubgraphClient';
 
 const IndividualClaim = ({
   payout,
@@ -93,7 +94,7 @@ const IndividualClaim = ({
     const checkAssociatedAddress = async () => {
       if (githubUserId) {
         try {
-          const associatedAddressSubgraph = await appState[0].openQSubgraphClient.getUserByGithubId(githubUserId);
+          const associatedAddressSubgraph = await OpenQSubgraphClient.getUserByGithubId(githubUserId);
           const associatedAddress = associatedAddressSubgraph?.id;
           if (associatedAddress !== zeroAddress) {
             setAssociatedAddress(associatedAddress);

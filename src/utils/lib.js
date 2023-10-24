@@ -1,3 +1,6 @@
+import OpenQSubgraphClient from "./OpenQSubgraphClient";
+import { getIssueData } from "./getIssueData";
+
 export const combineBounties = (subgraphBounties, githubIssues, metadata) => {
     const fullBounties = [];
     metadata.forEach((contract) => {
@@ -29,7 +32,7 @@ export const fetchBountiesWithServiceArg = async (appState, oldCursor, batch, or
         field = 'createdAt';
       }
       const { types, organizationId, repositoryId, title } = filters;
-      const { openQSubgraphClient, githubRepository, openQPrismaClient } = appState;
+      const { openQPrismaClient } = appState;
       let newCursor;
       let prismaContracts;
   
@@ -54,13 +57,13 @@ export const fetchBountiesWithServiceArg = async (appState, oldCursor, batch, or
   
       let subgraphContracts = [];
       try {
-        subgraphContracts = await openQSubgraphClient.getBountiesByContractAddresses(bountyAddresses);
+        subgraphContracts = await OpenQSubgraphClient.getBountiesByContractAddresses(bountyAddresses);
       } catch (err) {
         throw err;
       }
       let githubIssues = [];
       try {
-        githubIssues = await githubRepository.getIssueData(bountyIds);
+        githubIssues = await getIssueData(bountyIds);
       } catch (err) {
         githubIssues = [];
       }
