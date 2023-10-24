@@ -86,7 +86,7 @@ const IndividualClaim = ({
             }
           }
         } catch (err) {
-          appState[0].logger.error(err, 'IndividualClaim.js1');
+          console.log(err, 'IndividualClaim.js1');
         }
       }
     };
@@ -99,7 +99,7 @@ const IndividualClaim = ({
             setAssociatedAddress(associatedAddress);
           }
         } catch (err) {
-          appState[0].logger.error(err, 'IndividualClaim.js2');
+          console.log(err, 'IndividualClaim.js2');
         }
       }
     };
@@ -152,7 +152,7 @@ const IndividualClaim = ({
         setKYC(true);
       }
     } catch (err) {
-      appState[0].logger.error(err, 'IndividualClaim.js3');
+      console.log(err, 'IndividualClaim.js3');
     }
   };
   return (

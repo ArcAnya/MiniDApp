@@ -16,7 +16,6 @@ function useAsync(asyncFn, onSuccess, deps) {
 const useGetTokenValues = (tokenBalances) => {
   const [tokenValues, setTokenValues] = useState(null);
   const [appState] = useContext(StoreContext);
-  const { accountData } = appState;
 
   const getParsedTokenValues = async () => {
     if (JSON.stringify(tokenValues) !== '{}' && tokenBalances) {
@@ -24,7 +23,7 @@ const useGetTokenValues = (tokenBalances) => {
         const value = await appState.tokenClient.parseTokenValues(tokenBalances);
         return value;
       } catch (err) {
-        appState.logger.error({ message: err }, accountData.id, 'useGetTokenValues1');
+        console.log('useGetTokenValues1', err);
       }
     }
     if (tokenBalances?.length === 0) {

@@ -131,7 +131,7 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
               console.log('allWinners', allWinners);
             }
           } catch (err) {
-            appState[0].logger.error(err, 'ClaimsTracking.js1');
+            console.log(err, 'ClaimsTracking.js1');
           }
         }
         setWinners(allWinners);
