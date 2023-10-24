@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 const useWeb3 = () => {
     const { provider, active, activate, chainId, deactivate, error, account } = useWeb3React();
 
-    const chainIdEnv = /* process.env.NEXT_PUBLIC_DEPLOY_ENV === 'docker' ? 31337 : */ chainId;
+    const chainIdEnv = chainId;
     return {
       library: provider,
       account,
