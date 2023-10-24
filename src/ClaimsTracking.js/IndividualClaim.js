@@ -6,6 +6,7 @@ import CopyAddressToClipboard from '../copyAddressToClipboard';
 import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import { ethers } from 'ethers';
 import OpenQSubgraphClient from '../utils/OpenQSubgraphClient';
+import OpenQPrismaClient from '../utils/OpenQPrismaClient';
 
 const IndividualClaim = ({
   payout,
@@ -77,12 +78,12 @@ const IndividualClaim = ({
     const checkRequested = async () => {
       if (githubUserId) {
         try {
-          const user = await appState[0].openQPrismaClient.getPublicUser(githubUserId);
+          const user = await OpenQPrismaClient.getPublicUser(githubUserId);
           if (user) {
             const request = bounty.requests?.nodes?.find((node) => node.requestingUser.id === user.id);
             setRequested(request);
             if (request) {
-              const privateRequest = await appState[0].openQPrismaClient.getPrivateRequest(request.id);
+              const privateRequest = await OpenQPrismaClient.getPrivateRequest(request.id);
               setMessage(privateRequest?.message);
             }
           }

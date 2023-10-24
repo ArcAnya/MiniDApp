@@ -1,8 +1,7 @@
 // Third party
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 //Custom
-import StoreContext from '../../../store/Store/StoreContext';
 import ClaimsPerBounty from './ClaimsPerBounty';
 import useWeb3 from '../hooks/useWeb3';
 import LoadingIcon from '../loadingIcon';
@@ -13,7 +12,6 @@ import { fetchUsersByIds } from '../utils/fetchUsersByIds';
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
-  const [appState] = useContext(StoreContext);
   const [isOnCorrectNetwork] = useIsOnCorrectNetwork({
     chainId: chainId,
     error: error,
@@ -144,7 +142,7 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   // Utilities
 
   const getItems = async (oldCursor, batch, ordering, filters = {}) => {
-    return await fetchBountiesWithServiceArg(appState, oldCursor, batch, ordering, filters);
+    return await fetchBountiesWithServiceArg(oldCursor, batch, ordering, filters);
   };
 
   const filtering = (items, filters) => {

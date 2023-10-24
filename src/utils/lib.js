@@ -1,3 +1,4 @@
+import OpenQPrismaClient from "./OpenQPrismaClient";
 import OpenQSubgraphClient from "./OpenQSubgraphClient";
 import { getIssueData } from "./getIssueData";
 
@@ -22,7 +23,7 @@ export const combineBounties = (subgraphBounties, githubIssues, metadata) => {
     return fullBounties;
   };
 
-export const fetchBountiesWithServiceArg = async (appState, oldCursor, batch, ordering, filters) => {
+export const fetchBountiesWithServiceArg = async (oldCursor, batch, ordering, filters) => {
     try {
       let { sortOrder, field } = ordering;
       if (!sortOrder) {
@@ -32,11 +33,10 @@ export const fetchBountiesWithServiceArg = async (appState, oldCursor, batch, or
         field = 'createdAt';
       }
       const { types, organizationId, repositoryId, title } = filters;
-      const { openQPrismaClient } = appState;
       let newCursor;
       let prismaContracts;
   
-      const prismaContractsResult = await openQPrismaClient.getContractPage(
+      const prismaContractsResult = await OpenQPrismaClient.getContractPage(
         oldCursor,
         batch,
         sortOrder,
@@ -75,7 +75,7 @@ export const fetchBountiesWithServiceArg = async (appState, oldCursor, batch, or
         complete,
       };
     } catch (err) {
-      appState.logger.error(err);
+      console.log(err);
       return { nodes: [], cursor: null, complete: true };
     }
   };
