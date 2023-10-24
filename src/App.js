@@ -37,6 +37,7 @@ function App() {
         <p>
           Check out the data.
         </p>
+        
         <Web3ReactProvider connectors={connectors} key={JSON.stringify(connectors)}>
           <ClaimsTracking fetchFilters={fetchFilters} TVLBalances={TVLBalances} payoutBalances={payoutBalances} />
         </Web3ReactProvider>

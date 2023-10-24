@@ -10,6 +10,7 @@ import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import useGetTokenValues from '../hooks/useGetTokenValues';
 import { fetchUsersByIds } from '../utils/fetchUsersByIds';
 import { exportToCSV } from '../utils/exportToCSV';
+import { metaMask } from '../utils/connectors';
 
 const MockData = { 
   orgName: "Hello",
@@ -205,9 +206,24 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
 
   const gridFormat = 'grid grid-cols-[1fr_1fr_1fr_0.75fr_0.5fr_0.75fr_0.5fr]';
 
+  const handleMetaMask = async () => {
+    try {
+      if (!metaMask) return;
+      await metaMask.activate();
+    } catch (err) {
+      console.log(err, 'ConnectModal.js1');
+    }
+  };
+
   // Render
   return (
     <>
+              <button
+                onClick={handleMetaMask}
+                className='flex w-full items-center justify-center btn-default mr-4 whitespace-nowrap'
+              >
+                {'Connect Wallet'}
+              </button>
       <button onClick={() => exportToCSV(csvData)}>Export CSV</button>
       <div className='px-4 py-3 gap-6 w-full flex flex-wrap md:flex-nowrap'>
         <div className='max-w-[960px] w-full md:basis-3/4 md:shrink'>
