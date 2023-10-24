@@ -25,6 +25,8 @@ const IndividualClaim = ({
   filteredInfo,
   filters,
   winnersInfo,
+  setCsvData,
+  csvData
 }) => {
   const modalRef = useRef();
   const buttonRef = useRef();
@@ -162,6 +164,26 @@ const IndividualClaim = ({
       console.log(err, 'IndividualClaim.js3');
     }
   };
+  const newCsvData = { 
+    orgName: bounty.alternativeName,
+    bountyTitle: bounty.title,
+    bountyId: bounty.bountyId,
+    bountyAddress: bounty.bountyAddress,
+    issueGithubUrl: bounty.url,
+    githubLogin: githubUser.login,
+    githubId: githubUserId,
+    githubUrl: githubUser.url,
+    planned: `${formattedToken} ${token.symbol}`,
+    w8w9: bounty.supportingDocumentsCompleted?.[index] ? 'APPROVED' : requested ? 'PENDING' : 'NOT SENT',
+    kyc: KYC ? 'TRUE' : 'FALSE',
+    wallet: associatedAddress,
+    walletLink: `https://polygonscan.com/address/${associatedAddress}`,
+    claimed: claimed ? 'TRUE' : 'FALSE',
+    claimedAmount: 0,
+    claimedDate: 'n/a'
+  }
+  console.log("csvReady", csvData);
+  setCsvData([...csvData, newCsvData])
   return (
     <div className={`${hide} text-sm items-center gap-4 ${gridFormat}`}>
       {githubUserId ? (

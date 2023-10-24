@@ -9,9 +9,30 @@ import { fetchBountiesWithServiceArg, formatCurrency } from '../utils/lib';
 import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import useGetTokenValues from '../hooks/useGetTokenValues';
 import { fetchUsersByIds } from '../utils/fetchUsersByIds';
+import { exportToCSV } from '../utils/exportToCSV';
+
+const MockData = { 
+  orgName: "Hello",
+  bountyTitle: "A long title",
+  bountyId: "djfeidf",
+  bountyAddress: "addressoidfnejf",
+  issueGithubUrl: "myUrl",
+  githubLogin: "Login",
+  githubId: "githubUser",
+  githubUrl: "githubUser.url",
+  planned: "Money",
+  w8w9: 'APPROVED',
+  kyc: 'FALSE',
+  wallet: "associatedAddress",
+  walletLink: `https://polygonscan.com/address/skdfwiuefd`,
+  claimed: 'TRUE',
+  claimedAmount: 0,
+  claimedDate: 'n/a'
+};
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
+  const [csvData, setCsvData] = useState([{}]);
   const [isOnCorrectNetwork] = useIsOnCorrectNetwork({
     chainId: chainId,
     error: error,
@@ -187,6 +208,7 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   // Render
   return (
     <>
+      <button onClick={() => exportToCSV(csvData)}>Export CSV</button>
       <div className='px-4 py-3 gap-6 w-full flex flex-wrap md:flex-nowrap'>
         <div className='max-w-[960px] w-full md:basis-3/4 md:shrink'>
           {!isOnCorrectNetwork && (
@@ -298,6 +320,8 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
                     filteredInfo={filteredInfo}
                     filters={filters}
                     winnersInfo={bountyWinners}
+                    setCsvData={setCsvData}
+                    csvData={csvData}
                   />
                 </div>
               );
