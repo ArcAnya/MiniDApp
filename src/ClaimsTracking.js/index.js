@@ -9,6 +9,7 @@ import LoadingIcon from '../loadingIcon';
 import { fetchBountiesWithServiceArg, formatCurrency } from '../utils/lib';
 import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import useGetTokenValues from '../hooks/useGetTokenValues';
+import { fetchUsersByIds } from '../utils/fetchUsersByIds';
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
@@ -124,7 +125,7 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
         while (loopArray.length > 0) {
           let result = null;
           try {
-            result = await appState.githubRepository.fetchUsersByIds(loopArray.splice(0, 100));
+            result = await fetchUsersByIds(loopArray.splice(0, 100));
             if (result?.data?.nodes) {
               const addArray = result.data.nodes.filter((item) => item !== null);
               allWinners = [...allWinners, ...addArray];
