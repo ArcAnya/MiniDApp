@@ -2,6 +2,9 @@ import OpenQPrismaClient from "./OpenQPrismaClient";
 import OpenQSubgraphClient from "./OpenQSubgraphClient";
 import { getIssueData } from "./getIssueData";
 
+const openQSubgraphClient = new OpenQSubgraphClient();
+const openQPrismaClient = new OpenQPrismaClient();
+
 export const combineBounties = (subgraphBounties, githubIssues, metadata) => {
     const fullBounties = [];
     metadata.forEach((contract) => {
@@ -36,7 +39,7 @@ export const fetchBountiesWithServiceArg = async (oldCursor, batch, ordering, fi
       let newCursor;
       let prismaContracts;
   
-      const prismaContractsResult = await OpenQPrismaClient.getContractPage(
+      const prismaContractsResult = await openQPrismaClient.getContractPage(
         oldCursor,
         batch,
         sortOrder,
@@ -57,7 +60,7 @@ export const fetchBountiesWithServiceArg = async (oldCursor, batch, ordering, fi
   
       let subgraphContracts = [];
       try {
-        subgraphContracts = await OpenQSubgraphClient.getBountiesByContractAddresses(bountyAddresses);
+        subgraphContracts = await openQSubgraphClient.getBountiesByContractAddresses(bountyAddresses);
       } catch (err) {
         throw err;
       }

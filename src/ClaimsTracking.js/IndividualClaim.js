@@ -9,6 +9,11 @@ import OpenQPrismaClient from '../utils/OpenQPrismaClient';
 import TokenClient from '../utils/TokenClient';
 import OpenQClient from '../utils/OpenQClient';
 
+const openQClient = new OpenQClient();
+const openQSubgraphClient = new OpenQSubgraphClient();
+const tokenClient = new TokenClient();
+const openQPrismaClient = new OpenQPrismaClient();
+
 const IndividualClaim = ({
   payout,
   bounty,
@@ -31,7 +36,7 @@ const IndividualClaim = ({
     account: account,
   });
 
-  const token = TokenClient.getToken(bounty?.payoutTokenAddress);
+  const token = tokenClient.getToken(bounty?.payoutTokenAddress);
   const formattedToken = ethers.utils.formatUnits(
     ethers.BigNumber.from(payout.toString()),
     parseInt(token.decimals) || 18
@@ -78,12 +83,12 @@ const IndividualClaim = ({
     const checkRequested = async () => {
       if (githubUserId) {
         try {
-          const user = await OpenQPrismaClient.getPublicUser(githubUserId);
+          const user = await openQPrismaClient.getPublicUser(githubUserId);
           if (user) {
             const request = bounty.requests?.nodes?.find((node) => node.requestingUser.id === user.id);
             setRequested(request);
             if (request) {
-              const privateRequest = await OpenQPrismaClient.getPrivateRequest(request.id);
+              const privateRequest = await openQPrismaClient.getPrivateRequest(request.id);
               setMessage(privateRequest?.message);
             }
           }
@@ -95,7 +100,7 @@ const IndividualClaim = ({
     const checkAssociatedAddress = async () => {
       if (githubUserId) {
         try {
-          const associatedAddressSubgraph = await OpenQSubgraphClient.getUserByGithubId(githubUserId);
+          const associatedAddressSubgraph = await openQSubgraphClient.getUserByGithubId(githubUserId);
           const associatedAddress = associatedAddressSubgraph?.id;
           if (associatedAddress !== zeroAddress) {
             setAssociatedAddress(associatedAddress);
@@ -149,7 +154,7 @@ const IndividualClaim = ({
   };
   const hasKYC = async () => {
     try {
-      const transaction = await OpenQClient.hasKYC(library, associatedAddress);
+      const transaction = await openQClient.hasKYC(library, associatedAddress);
       if (transaction) {
         setKYC(true);
       }
