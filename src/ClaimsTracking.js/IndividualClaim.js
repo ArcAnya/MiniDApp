@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import StoreContext from '../../../../../store/Store/StoreContext';
+import React, { useEffect, useRef, useState } from 'react';
 import { LinkIcon } from '@primer/octicons-react';
 import useWeb3 from '../hooks/useWeb3';
 import CopyAddressToClipboard from '../copyAddressToClipboard';
@@ -8,6 +7,7 @@ import { ethers } from 'ethers';
 import OpenQSubgraphClient from '../utils/OpenQSubgraphClient';
 import OpenQPrismaClient from '../utils/OpenQPrismaClient';
 import TokenClient from '../utils/TokenClient';
+import OpenQClient from '../utils/OpenQClient';
 
 const IndividualClaim = ({
   payout,
@@ -21,7 +21,6 @@ const IndividualClaim = ({
   filters,
   winnersInfo,
 }) => {
-  const appState = useContext(StoreContext);
   const modalRef = useRef();
   const buttonRef = useRef();
   const [showAccountModal, setShowAccountModal] = useState();
@@ -150,7 +149,7 @@ const IndividualClaim = ({
   };
   const hasKYC = async () => {
     try {
-      const transaction = await appState[0].openQClient.hasKYC(library, associatedAddress);
+      const transaction = await OpenQClient.hasKYC(library, associatedAddress);
       if (transaction) {
         setKYC(true);
       }
