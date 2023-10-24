@@ -4,11 +4,11 @@ import React, { useState, useContext, useEffect, useMemo } from 'react';
 //Custom
 import StoreContext from '../../../store/Store/StoreContext';
 import ClaimsPerBounty from './ClaimsPerBounty';
-import useGetTokenValues from '../../../hooks/useGetTokenValues';
-import useIsOnCorrectNetwork from '../../../hooks/useIsOnCorrectNetwork';
 import useWeb3 from '../hooks/useWeb3';
 import LoadingIcon from '../loadingIcon';
 import { fetchBountiesWithServiceArg, formatCurrency } from '../utils/lib';
+import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
+import useGetTokenValues from '../hooks/useGetTokenValues';
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
@@ -83,7 +83,7 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
 
   useEffect(() => {
     Object.keys(filteredInfo).forEach((id) => {
-      if (!filteredItems.some((item) => item.id == id)) {
+      if (!filteredItems.some((item) => item.id === id)) {
         let newFilteredInfo = filteredInfo;
         newFilteredInfo[id].filteredCount = 0;
         return setFilteredInfo({ ...filteredInfo, ...newFilteredInfo });

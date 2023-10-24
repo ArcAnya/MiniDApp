@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import StoreContext from '../../../../../store/Store/StoreContext';
-import { ethers } from 'ethers';
-import useIsOnCorrectNetwork from '../../../../../hooks/useIsOnCorrectNetwork';
 import { LinkIcon } from '@primer/octicons-react';
 import useWeb3 from '../hooks/useWeb3';
 import CopyAddressToClipboard from '../copyAddressToClipboard';
+import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
+import { ethers } from 'ethers';
 
 const IndividualClaim = ({
   payout,
