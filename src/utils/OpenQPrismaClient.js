@@ -86,7 +86,7 @@ export const GET_CONTRACT_PAGE = gql`
 class OpenQPrismaClient {
   constructor() {}
 
-  uri = process.env.OPENQ_API_URL;
+  uri = "https://openq.dev/api";
   httpLink = new HttpLink({ uri: this.uri, fetch, credentials: 'include' });
 
   client = new ApolloClient({

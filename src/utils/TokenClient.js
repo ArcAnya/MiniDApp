@@ -23,7 +23,7 @@ class TokenClient {
   }
   firstTenPrices = {};
 
-  url = process.env.COIN_API_URL;
+  url = "https://openq.dev/coinapi";
   async getTokenValues(tokenVolumes, url) {
     const promise = new Promise((resolve, reject) => {
       axios

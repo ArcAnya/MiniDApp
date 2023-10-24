@@ -1,7 +1,16 @@
 import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
 import fetch from 'cross-fetch';
 
-export const GET_TOTAL_FUNDED_PER_ORGANIZATION_ID = gql`
+const GET_TOTAL_PAYOUT_PER_ORGANIZATION_ID = gql`
+  query GetTotalPayoutPerOrganizationId($organizationId: ID!) {
+    organizationPayoutTokenBalances(where: { organization: $organizationId }) {
+      id
+      volume
+    }
+  }
+`;
+
+const GET_TOTAL_FUNDED_PER_ORGANIZATION_ID = gql`
   query GetTotalFundedPerOrganizationId($organizationId: ID!) {
     organizationFundedTokenBalances(where: { organization: $organizationId }) {
       id
@@ -82,7 +91,7 @@ const GET_BOUNTIES_BY_CONTRACT_ADDRESSES = gql`
 class OpenQSubgraphClient {
   constructor() {}
 
-  uri = process.env.OPENQ_SUBGRAPH_SSR_HTTP_URL;
+  uri = "https://api.thegraph.com/subgraphs/name/openqdev/openq";
 
   httpLink = new HttpLink({ uri: this.uri, fetch });
 
@@ -91,6 +100,22 @@ class OpenQSubgraphClient {
     link: this.httpLink,
     cache: new InMemoryCache(),
   });
+
+  async getTotalPayoutPerOrganizationId(organizationId) {
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const result = await this.client.query({
+          query: GET_TOTAL_PAYOUT_PER_ORGANIZATION_ID,
+          variables: { organizationId },
+        });
+        resolve(result.data.organizationPayoutTokenBalances);
+      } catch (e) {
+        reject(e);
+      }
+    });
+
+    return promise;
+  }
 
   async getTotalFundedPerOrganizationId(organizationId) {
     const promise = new Promise(async (resolve, reject) => {
