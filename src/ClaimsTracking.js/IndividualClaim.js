@@ -7,6 +7,7 @@ import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import { ethers } from 'ethers';
 import OpenQSubgraphClient from '../utils/OpenQSubgraphClient';
 import OpenQPrismaClient from '../utils/OpenQPrismaClient';
+import TokenClient from '../utils/TokenClient';
 
 const IndividualClaim = ({
   payout,
@@ -31,7 +32,7 @@ const IndividualClaim = ({
     account: account,
   });
 
-  const token = appState[0].tokenClient.getToken(bounty?.payoutTokenAddress);
+  const token = TokenClient.getToken(bounty?.payoutTokenAddress);
   const formattedToken = ethers.utils.formatUnits(
     ethers.BigNumber.from(payout.toString()),
     parseInt(token.decimals) || 18

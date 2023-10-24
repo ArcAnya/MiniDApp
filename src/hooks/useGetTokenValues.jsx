@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
-import StoreContext from '../store/Store/StoreContext';
+import { useState, useEffect } from 'react';
+import TokenClient from '../utils/TokenClient';
 function useAsync(asyncFn, onSuccess, deps) {
   useEffect(() => {
     let isActive = true;
@@ -15,12 +15,11 @@ function useAsync(asyncFn, onSuccess, deps) {
 }
 const useGetTokenValues = (tokenBalances) => {
   const [tokenValues, setTokenValues] = useState(null);
-  const [appState] = useContext(StoreContext);
 
   const getParsedTokenValues = async () => {
     if (JSON.stringify(tokenValues) !== '{}' && tokenBalances) {
       try {
-        const value = await appState.tokenClient.parseTokenValues(tokenBalances);
+        const value = await TokenClient.parseTokenValues(tokenBalances);
         return value;
       } catch (err) {
         console.log('useGetTokenValues1', err);
