@@ -15,7 +15,7 @@ const githubRepository = new GithubRepository();
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
-  const [csvData, setCsvData] = useState([{}]);
+  const [csvData, setCsvData] = useState([]);
   const [isOnCorrectNetwork] = useIsOnCorrectNetwork({
     chainId: chainId,
     error: error,
@@ -182,6 +182,7 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
       console.log(err, 'ConnectModal.js1');
     }
   };
+  console.log("csvData", csvData);
 
   // Render
   return (

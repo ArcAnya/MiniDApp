@@ -158,15 +158,15 @@ const IndividualClaim = ({
       console.log(err, 'IndividualClaim.js3');
     }
   };
-  const newCsvData = { 
+  const newCsvDataObj = { 
     orgName: bounty.alternativeName,
     bountyTitle: bounty.title,
     bountyId: bounty.bountyId,
     bountyAddress: bounty.bountyAddress,
     issueGithubUrl: bounty.url,
-    githubLogin: githubUser.login,
+    githubLogin: githubUser?.login,
     githubId: githubUserId,
-    githubUrl: githubUser.url,
+    githubUrl: githubUser?.url,
     planned: `${formattedToken} USD`,
     w8w9: bounty.supportingDocumentsCompleted?.[index] ? 'APPROVED' : requested ? 'PENDING' : 'NOT SENT',
     kyc: KYC ? 'TRUE' : 'FALSE',
@@ -176,10 +176,16 @@ const IndividualClaim = ({
     claimedAmount: 0,
     claimedDate: 'n/a'
   }
-  /* useEffect(() => {
-  setCsvData([...csvData, newCsvData])
-  }, [newCsvData]) */
-  console.log("csvReady", csvData);
+  const newCsvData = Object.values(newCsvDataObj);
+
+  useEffect(() => {
+    const stringCsvData = JSON.stringify(csvData);
+    const stringNewCsvData = JSON.stringify(newCsvData);
+    if(newCsvData && !stringCsvData.includes(stringNewCsvData)) {
+      setCsvData([...csvData, newCsvData])
+    }
+  }, [newCsvData])
+  //console.log("csvInChild", newCsvData);
   return (
     <div className={`${hide} text-sm items-center gap-4 ${gridFormat}`}>
       {githubUserId ? (
