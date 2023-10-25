@@ -26,7 +26,7 @@ export async function fetchUsersByIds(ids) {
           },
             method: "POST",
             body: JSON.stringify({
-              query: GET_USERS_BY_IDS,
+              query: GET_USERS_BY_IDS.loc.source.body,
               variables: {
                 ids,
               },

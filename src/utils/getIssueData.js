@@ -81,7 +81,7 @@ export async function getIssueData(ids) {
           },
             method: "POST",
             body: JSON.stringify({
-              query: GET_ISSUES_BY_ID,
+              query: GET_ISSUES_BY_ID.loc.source.body,
               variables: {
                 ids,
               },
