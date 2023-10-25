@@ -8,7 +8,7 @@ const ClaimsPerBounty = ({ item, filters, setFilteredInfo, filteredInfo, winners
   return (
     <div
       className={`${
-        filteredInfo[item.id]?.filteredCount === 0 && 'hidden'
+        filteredInfo[item.id]?.filteredCount == 0 && 'hidden'
       } flex flex-col mb-4 lg:min-w-[1000px] overflow-x-auto border border-web-gray rounded-sm p-4`}
     >
       <div className='flex items-center gap-4 mb-2'>

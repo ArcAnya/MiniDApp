@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { LinkIcon } from '@primer/octicons-react';
-import useWeb3 from '../hooks/useWeb3';
 import CopyAddressToClipboard from '../copyAddressToClipboard';
-import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import OpenQSubgraphClient from '../utils/OpenQSubgraphClient';
 import OpenQPrismaClient from '../utils/OpenQPrismaClient';
 import OpenQClient from '../utils/OpenQClient';
@@ -23,21 +21,16 @@ const IndividualClaim = ({
   filters,
   winnersInfo,
   setCsvData,
-  csvData
+  csvData,
 }) => {
   const modalRef = useRef();
   const buttonRef = useRef();
   const [showAccountModal, setShowAccountModal] = useState();
-  const { chainId, library, account, error } = useWeb3();
-  const [isOnCorrectNetwork] = useIsOnCorrectNetwork({
-    chainId: chainId,
-    error: error,
-    account: account,
-  });
+  const isOnCorrectNetwork = true;
 
   const formattedToken = payout / 1000000;
   const githubUserId = bounty.tierWinners?.[index];
-  const githubUser = winnersInfo && winnersInfo?.find((winner) => winner.id === githubUserId);
+  const githubUser = winnersInfo && winnersInfo?.find((winner) => winner.id == githubUserId);
   const [associatedAddress, setAssociatedAddress] = useState('');
   const [requested, setRequested] = useState(false);
   const [message, setMessage] = useState('');
@@ -52,10 +45,10 @@ const IndividualClaim = ({
   const [walletCondition, setWalletCondition] = useState(true);
   const githubCondition =
     githubFilter && !githubUserId?.includes(githubFilter) && !githubUser?.login.includes(githubFilter);
-  const [claimed, setClaimed] = useState(bounty?.claims?.some((claim) => claim.tier === index));
+  const [claimed, setClaimed] = useState(bounty?.claims?.some((claim) => claim.tier == index));
   const [claimCondition, setClaimCondition] = useState(true);
   const w8Condition = w8Filter !== 'all' && w8Filter !== w8Status.toLowerCase();
-  const kycCondition = (kycFilter === 'true' && !KYC) || (kycFilter === 'false' && KYC);
+  const kycCondition = (kycFilter == 'true' && !KYC) || (kycFilter == 'false' && KYC);
   const [hide, setHide] = useState('');
 
 
@@ -72,7 +65,7 @@ const IndividualClaim = ({
     };
   });
   useEffect(() => {
-    const claimCondition = (claimFilter === 'true' && !claimed) || (claimFilter === 'false' && claimed);
+    const claimCondition = (claimFilter == 'true' && !claimed) || (claimFilter == 'false' && claimed);
     setClaimCondition(claimCondition);
   }, [claimFilter, claimed]);
   useEffect(() => {
@@ -81,7 +74,7 @@ const IndividualClaim = ({
         try {
           const user = await openQPrismaClient.getPublicUser(githubUserId);
           if (user) {
-            const request = bounty.requests?.nodes?.find((node) => node.requestingUser.id === user.id);
+            const request = bounty.requests?.nodes?.find((node) => node.requestingUser.id == user.id);
             setRequested(request);
             if (request) {
               const privateRequest = await openQPrismaClient.getPrivateRequest(request.id);
@@ -110,7 +103,7 @@ const IndividualClaim = ({
     checkAssociatedAddress();
   }, [githubUserId]);
   useEffect(() => {
-    setClaimed(bounty?.claims?.some((claim) => claim.tier === index));
+    setClaimed(bounty?.claims?.some((claim) => claim.tier == index));
     const currentW8Status = bounty.supportingDocumentsCompleted?.[index]
       ? 'APPROVED'
       : requested
@@ -127,11 +120,11 @@ const IndividualClaim = ({
     let newFilteredInfo = filteredInfo;
     if (githubCondition || claimCondition || w8Condition || kycCondition || !walletCondition) {
       newFilteredTiers[index] = false;
-      newCount = newFilteredTiers?.filter((value) => value === true)?.length || 0;
+      newCount = newFilteredTiers?.filter((value) => value == true)?.length || 0;
       setHide('hidden');
     } else {
       newFilteredTiers[index] = true;
-      newCount = newFilteredTiers?.filter((value) => value === true)?.length || 0;
+      newCount = newFilteredTiers?.filter((value) => value == true)?.length || 0;
       setHide('');
     }
     setFilteredTiers(newFilteredTiers);
@@ -139,8 +132,8 @@ const IndividualClaim = ({
     setFilteredInfo({ ...filteredInfo, ...newFilteredInfo });
   }, [filters, githubCondition, claimCondition, w8Condition, kycCondition, walletCondition]);
   useEffect(() => {
-    if (associatedAddress && chainId === 137) hasKYC();
-  }, [chainId, associatedAddress]);
+    if (associatedAddress) hasKYC();
+  }, [associatedAddress]);
   const checkWallet = () => {
     if (walletFilter?.length > 0) {
       setWalletCondition(associatedAddress?.toLowerCase().includes(walletFilter.toLowerCase()));
@@ -150,7 +143,7 @@ const IndividualClaim = ({
   };
   const hasKYC = async () => {
     try {
-      const transaction = await openQClient.hasKYC(library, associatedAddress);
+      const transaction = await openQClient.hasKYC(associatedAddress);
       if (transaction) {
         setKYC(true);
       }
@@ -173,20 +166,29 @@ const IndividualClaim = ({
     wallet: associatedAddress,
     walletLink: `https://polygonscan.com/address/${associatedAddress}`,
     claimed: claimed ? 'TRUE' : 'FALSE',
-    claimedAmount: 0,
-    claimedDate: 'n/a'
+    tier: index,
   }
+
   const newCsvData = Object.values(newCsvDataObj);
 
   useEffect(() => {
-    const stringCsvData = JSON.stringify(csvData);
-    const stringNewCsvData = JSON.stringify(newCsvData);
-    if(newCsvData && !stringCsvData.includes(stringNewCsvData)) {
-      setCsvData([...csvData, newCsvData])
+    if (newCsvData && newCsvData[2]) {
+      const oldData = csvData;
+      
+       const indexToRemove = oldData.findIndex((data) => {
+        return data[2] === newCsvData[2] && data[14] === newCsvData[14];
+      });
+      if (indexToRemove !== -1) {
+        oldData.splice(indexToRemove, 1, newCsvData);
+      } else {
+        oldData.push(newCsvData);
+      }
+      
+      setCsvData(oldData);
+      
     }
   }, [newCsvData])
-  //console.log("csvInChild", newCsvData);
-  return (
+   return (
     <div className={`${hide} text-sm items-center gap-4 ${gridFormat}`}>
       {githubUserId ? (
         <div className='flex gap-2 '>

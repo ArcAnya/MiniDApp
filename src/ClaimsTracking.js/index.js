@@ -3,24 +3,32 @@ import React, { useState, useEffect } from 'react';
 
 //Custom
 import ClaimsPerBounty from './ClaimsPerBounty';
-import useWeb3 from '../hooks/useWeb3';
 import LoadingIcon from '../loadingIcon';
 import { fetchBountiesWithServiceArg, formatCurrency } from '../utils/lib';
-import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
 import { exportToCSV } from '../utils/exportToCSV';
-import { metaMask } from '../utils/connectors';
 import GithubRepository from '../utils/GithubRepository';
 
 const githubRepository = new GithubRepository();
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
-  const { account, chainId, error } = useWeb3();
-  const [csvData, setCsvData] = useState([]);
-  const [isOnCorrectNetwork] = useIsOnCorrectNetwork({
-    chainId: chainId,
-    error: error,
-    account: account,
-  });
+  const firstArray = [
+    "orgName",
+    "bountyTitle",
+    "bountyId",
+    "bountyAddress",
+    "issueGithubUrl",
+    "githubLogin",
+    "githubId",
+    "githubUrl",
+    "planned",
+    "w8w9",
+    "kyc",
+    "wallet",
+    "walletLink",
+    "claimed",
+    "tier"]
+  const [csvData, setCsvData] = useState([firstArray]);
+  const isOnCorrectNetwork = true;
 
   // Hooks
   const [issueText, setIssueText] = useState('');
@@ -174,25 +182,11 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
 
   const gridFormat = 'grid grid-cols-[1fr_1fr_1fr_0.75fr_0.5fr_0.75fr_0.5fr]';
 
-  const handleMetaMask = async () => {
-    try {
-      if (!metaMask) return;
-      await metaMask.activate();
-    } catch (err) {
-      console.log(err, 'ConnectModal.js1');
-    }
-  };
-  console.log("csvData", csvData);
+  console.log('csvData', csvData);
 
   // Render
   return (
     <>
-              <button
-                onClick={handleMetaMask}
-                className='flex w-full items-center justify-center btn-default mr-4 whitespace-nowrap'
-              >
-                {'Connect Wallet'}
-              </button>
       <button onClick={() => exportToCSV(csvData)}>Export CSV</button>
       <div className='px-4 py-3 gap-6 w-full flex flex-wrap md:flex-nowrap'>
         <div className='max-w-[960px] w-full md:basis-3/4 md:shrink'>

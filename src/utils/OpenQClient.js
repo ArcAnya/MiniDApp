@@ -1,52 +1,36 @@
 import { ethers } from 'ethers';
-import OpenQABI from '../artifacts/OpenQV1.json';
 import ClaimManagerAbi from '../artifacts/ClaimManagerV1.json';
-import KYCABI from '../artifacts/MockKyc.json';
-
-import ERC20ABI from '../artifacts/ERC20.json';
 
 class OpenQClient {
-  constructor() {}
+  constructor() {
+    const url = "<PLACE-INFURA-LINK>";
+    const customHttpProvider = new ethers.providers.JsonRpcProvider(url);
+    customHttpProvider.getBlockNumber().then((result) => {
+      console.log("Current block number: " + result);
+  });
+
+    const wallet = new ethers.Wallet("<PLACE_TEST_WALLET_PRIVATE_KEY>", customHttpProvider); 
+    this.signer = wallet.provider.getSigner(wallet.address); 
+  }
 
   /**
    *
    * @param {Web3Provider} signer An ethers.js signer
    * @returns Web3Contract
    */
-  OpenQ = (signer) => {
-    const contract = new ethers.Contract(process.env.OPENQ_PROXY_ADDRESS, OpenQABI.abi, signer);
-    return contract;
-  };
 
-  ClaimManager = (signer) => {
+  ClaimManager = () => {
     const contract = new ethers.Contract(
-      process.env.CLAIM_MANAGER_PROXY_ADDRESS,
+      "0xB37e642Cb97D02CbEDBd4Cc83b52d06B0A2F1E7c",
       ClaimManagerAbi.abi,
-      signer
+      this.signer
     );
     return contract;
   };
-
-  /**
-   *
-   * @param {string} tokenAddress Contract address of an ERC20 token
-   * @param {Web3Provider} signer An ethers.js signer
-   * @returns Web3Contract
-   */
-  ERC20 = (tokenAddress, signer) => {
-    const contract = new ethers.Contract(tokenAddress, ERC20ABI.abi, signer);
-    return contract;
-  };
-
-  KYC = (signer) => {
-    const contract = new ethers.Contract(process.env.KYC_ADDRESS, KYCABI.abi, signer);
-    return contract;
-  };
-
-  hasKYC = async (library, _address) => {
+  
+  hasKYC = async (_address) => {
     return new Promise(async (resolve, reject) => {
-      const signer = library.getSigner();
-      const contract = this.ClaimManager(signer);
+      const contract = this.ClaimManager(this.signer);
       try {
         const hasKYC = await contract.hasKYC(_address);
         resolve(hasKYC);
