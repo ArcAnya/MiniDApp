@@ -3,15 +3,12 @@ import { LinkIcon } from '@primer/octicons-react';
 import useWeb3 from '../hooks/useWeb3';
 import CopyAddressToClipboard from '../copyAddressToClipboard';
 import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
-import { ethers } from 'ethers';
 import OpenQSubgraphClient from '../utils/OpenQSubgraphClient';
 import OpenQPrismaClient from '../utils/OpenQPrismaClient';
-import TokenClient from '../utils/TokenClient';
 import OpenQClient from '../utils/OpenQClient';
 
 const openQClient = new OpenQClient();
 const openQSubgraphClient = new OpenQSubgraphClient();
-const tokenClient = new TokenClient();
 const openQPrismaClient = new OpenQPrismaClient();
 
 const IndividualClaim = ({
@@ -38,11 +35,7 @@ const IndividualClaim = ({
     account: account,
   });
 
-  const token = tokenClient.getToken(bounty?.payoutTokenAddress);
-  const formattedToken = ethers.utils.formatUnits(
-    ethers.BigNumber.from(payout.toString()),
-    parseInt(token.decimals) || 18
-  );
+  const formattedToken = payout / 1000000;
   const githubUserId = bounty.tierWinners?.[index];
   const githubUser = winnersInfo && winnersInfo?.find((winner) => winner.id === githubUserId);
   const [associatedAddress, setAssociatedAddress] = useState('');
@@ -64,6 +57,7 @@ const IndividualClaim = ({
   const w8Condition = w8Filter !== 'all' && w8Filter !== w8Status.toLowerCase();
   const kycCondition = (kycFilter === 'true' && !KYC) || (kycFilter === 'false' && KYC);
   const [hide, setHide] = useState('');
+
 
   useEffect(() => {
     let handler = (event) => {
@@ -173,7 +167,7 @@ const IndividualClaim = ({
     githubLogin: githubUser.login,
     githubId: githubUserId,
     githubUrl: githubUser.url,
-    planned: `${formattedToken} ${token.symbol}`,
+    planned: `${formattedToken} USD`,
     w8w9: bounty.supportingDocumentsCompleted?.[index] ? 'APPROVED' : requested ? 'PENDING' : 'NOT SENT',
     kyc: KYC ? 'TRUE' : 'FALSE',
     wallet: associatedAddress,
@@ -182,8 +176,10 @@ const IndividualClaim = ({
     claimedAmount: 0,
     claimedDate: 'n/a'
   }
-  console.log("csvReady", csvData);
+  /* useEffect(() => {
   setCsvData([...csvData, newCsvData])
+  }, [newCsvData]) */
+  console.log("csvReady", csvData);
   return (
     <div className={`${hide} text-sm items-center gap-4 ${gridFormat}`}>
       {githubUserId ? (
@@ -201,7 +197,7 @@ const IndividualClaim = ({
         <div className='text-gray-500'> Not Yet Assigned</div>
       )}
       <div className='flex justify-center'>
-        {formattedToken} {token.symbol}
+        {formattedToken} USD
       </div>
       <div
         className={`flex justify-center ${
