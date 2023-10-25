@@ -1,5 +1,5 @@
 // Third party
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 
 //Custom
 import ClaimsPerBounty from './ClaimsPerBounty';
@@ -7,29 +7,11 @@ import useWeb3 from '../hooks/useWeb3';
 import LoadingIcon from '../loadingIcon';
 import { fetchBountiesWithServiceArg, formatCurrency } from '../utils/lib';
 import useIsOnCorrectNetwork from '../hooks/useIsOnCorrectNetwork';
-import useGetTokenValues from '../hooks/useGetTokenValues';
-import { fetchUsersByIds } from '../utils/fetchUsersByIds';
 import { exportToCSV } from '../utils/exportToCSV';
 import { metaMask } from '../utils/connectors';
+import GithubRepository from '../utils/GithubRepository';
 
-const MockData = { 
-  orgName: "Hello",
-  bountyTitle: "A long title",
-  bountyId: "djfeidf",
-  bountyAddress: "addressoidfnejf",
-  issueGithubUrl: "myUrl",
-  githubLogin: "Login",
-  githubId: "githubUser",
-  githubUrl: "githubUser.url",
-  planned: "Money",
-  w8w9: 'APPROVED',
-  kyc: 'FALSE',
-  wallet: "associatedAddress",
-  walletLink: `https://polygonscan.com/address/skdfwiuefd`,
-  claimed: 'TRUE',
-  claimedAmount: 0,
-  claimedDate: 'n/a'
-};
+const githubRepository = new GithubRepository();
 
 const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const { account, chainId, error } = useWeb3();
@@ -56,23 +38,9 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
   const [loading, setLoading] = useState(false);
   const [loadingBounties, setLoadingBounties] = useState(false);
   const ordering = { sortOrder: 'desc', field: 'createdAt' };
-  const createTVLObj = (TVLBalances) => {
-    return TVLBalances.map((item) => {
-      return { tokenAddress: item.id?.split('-')[1], volume: item.volume };
-    });
-  };
-  const TVLObj = useMemo(() => createTVLObj(TVLBalances), [TVLBalances]);
-  const [TVLValues] = useGetTokenValues(TVLObj);
-  const TVL = TVLValues?.total;
 
-  const createPayoutObj = (payoutBalances) => {
-    return payoutBalances.map((item) => {
-      return { tokenAddress: item.id?.split('-')[1], volume: item.volume };
-    });
-  };
-  const payoutObj = useMemo(() => createPayoutObj(payoutBalances), [payoutBalances]);
-  const [payoutValues] = useGetTokenValues(payoutObj);
-  const payout = payoutValues?.total;
+  const TVL = TVLBalances?.[0]?.volume / 1000000;
+  const payout = payoutBalances?.[0]?.volume / 1000000;
 
   useEffect(() => {
     setLoadingBounties(true);
@@ -145,7 +113,7 @@ const ClaimsTracking = ({ fetchFilters, TVLBalances, payoutBalances }) => {
         while (loopArray.length > 0) {
           let result = null;
           try {
-            result = await fetchUsersByIds(loopArray.splice(0, 100));
+            result = await githubRepository.fetchUsersByIds(loopArray.splice(0, 100));
             if (result?.data?.nodes) {
               const addArray = result.data.nodes.filter((item) => item !== null);
               allWinners = [...allWinners, ...addArray];

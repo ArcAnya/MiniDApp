@@ -1,9 +1,10 @@
+import GithubRepository from "./GithubRepository";
 import OpenQPrismaClient from "./OpenQPrismaClient";
 import OpenQSubgraphClient from "./OpenQSubgraphClient";
-import { getIssueData } from "./getIssueData";
 
 const openQSubgraphClient = new OpenQSubgraphClient();
 const openQPrismaClient = new OpenQPrismaClient();
+const githubRepository = new GithubRepository();
 
 export const combineBounties = (subgraphBounties, githubIssues, metadata) => {
     const fullBounties = [];
@@ -50,9 +51,11 @@ export const fetchBountiesWithServiceArg = async (oldCursor, batch, ordering, fi
         repositoryId,
         title
       );
+      
       prismaContracts =
         prismaContractsResult.nodes.filter((contract) => !contract.blacklisted && !contract.organization.blacklisted) ||
         [];
+
       newCursor = prismaContractsResult.cursor;
   
       const bountyAddresses = prismaContracts.map((bounty) => bounty.address.toLowerCase());
@@ -66,8 +69,9 @@ export const fetchBountiesWithServiceArg = async (oldCursor, batch, ordering, fi
       }
       let githubIssues = [];
       try {
-        githubIssues = await getIssueData(bountyIds);
+        githubIssues = await githubRepository.getIssueData(bountyIds);
       } catch (err) {
+        console.log(err);
         githubIssues = [];
       }
       const complete = prismaContracts.length === 0;
